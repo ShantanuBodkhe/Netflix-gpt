@@ -1,17 +1,93 @@
 import React, { useRef } from "react";
 import Header from "./Header";
 import { checkValidData } from "../Utils/Validate";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  updateProfile,
+} from "firebase/auth";
+import { auth } from "../Utils/Firebase";
+import { useNavigate } from "react-router-dom";
+import { addUser } from "../Utils/UserSlice";
+import { useDispatch } from "react-redux";
 
 const Login = () => {
   const [isSignInForm, setIsSignInForm] = React.useState(true);
   const [errorMessage, setErrorMessage] = React.useState("");
-
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const email = useRef(null);
-  const password = useRef(null); 
+  const password = useRef(null);
 
   const handleButtonClick = () => {
     const message = checkValidData(email.current.value, password.current.value);
     setErrorMessage(message);
+
+    if (message) return;
+    //sign in or sign up logic here
+    if (!isSignInForm) {
+      //sign up logic here
+      createUserWithEmailAndPassword(
+        auth,
+        email.current.value,
+        password.current.value,
+      )
+        .then((userCredential) => {
+          // Signed in
+          const user = userCredential.user;
+          updateProfile(user, {
+            displayName:name.current.value,
+            photoURL:"https://media.licdn.com/dms/image/v2/D4D03AQGp1OlpMz1l8w/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1669181818407?e=1777507200&v=beta&t=4JY1M92AErqxeWcnE-gx0W7EubMpHGoYzlqn-ueN0cU"
+          })
+            .then(() => {
+              // Profile updated!
+              const { uid, email, displayName, photoURL } = auth.currentUser;
+                      dispatch(
+                        addUser({
+                          uid: uid,
+                          email: email,
+                          displayName: displayName,
+                          photoURL: photoURL,
+                        }),
+                      );
+              console.log("User profile updated successfully.");
+            })
+            .catch((error) => {
+              // An error occurred
+              console.error("Error updating user profile:", error);
+              setErrorMessage(error.message);
+            });
+          console.log("User created successfully:", user);
+          navigate("/browse");
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          console.error("Error creating user:", errorCode, errorMessage);
+          setErrorMessage(errorCode + ": " + errorMessage);
+        });
+    } else {
+      //sign in logic here
+      signInWithEmailAndPassword(
+        auth,
+        email.current.value,
+        password.current.value,
+      )
+        .then((userCredential) => {
+          // Signed in
+          const user = userCredential.user;
+          console.log("User signed in successfully:", user);
+          navigate("/browse");
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          console.error("Error signing in:", errorCode, errorMessage);
+          setErrorMessage(errorCode + " " + errorMessage);
+        });
+
+      // console.log("Signing In...");
+    }
   };
 
   const ToggleSignInForm = () => {
