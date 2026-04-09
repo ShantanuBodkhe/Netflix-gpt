@@ -1,11 +1,15 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Logo from "../Utils/Logo.png"
-import { signOut } from "firebase/auth";
+import { onAuthStateChanged, signOut } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import { auth } from "../Utils/Firebase";
 import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { addUser, removeUser } from "../Utils/UserSlice"; 
+
 const Header = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const user =useSelector((store) => store.user); 
 
   const handleSignOut = () => {
@@ -19,6 +23,24 @@ const Header = () => {
       console.error("Error signing out:", error);
     });
   }
+
+   useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        const { uid, email, displayName, photoURL } = user;
+        dispatch(
+          addUser({
+            uid: uid,
+            email: email,
+            displayName: displayName,
+            photoURL: photoURL,
+          }),
+        );
+      } else {
+        dispatch(removeUser());
+      }
+    });
+  }, []);
   return (
     <div className="w-screen absolute px-8 py-2 bg-gradient-to-b from-black z-10 flex justify-between items-center">
       <img
