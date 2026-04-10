@@ -7,7 +7,7 @@ import {
   updateProfile,
 } from "firebase/auth";
 import { auth } from "../Utils/Firebase";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import { addUser } from "../Utils/UserSlice";
 import { useDispatch } from "react-redux";
 
@@ -15,9 +15,10 @@ const Login = () => {
   const [isSignInForm, setIsSignInForm] = React.useState(true);
   const [errorMessage, setErrorMessage] = React.useState("");
   const dispatch = useDispatch();
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const email = useRef(null);
   const password = useRef(null);
+  const name = useRef(null);
 
   const handleButtonClick = () => {
     const message = checkValidData(email.current.value, password.current.value);
@@ -36,20 +37,20 @@ const Login = () => {
           // Signed in
           const user = userCredential.user;
           updateProfile(user, {
-            displayName:name.current.value,
-            photoURL:"https://media.licdn.com/dms/image/v2/D4D03AQGp1OlpMz1l8w/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1669181818407?e=1777507200&v=beta&t=4JY1M92AErqxeWcnE-gx0W7EubMpHGoYzlqn-ueN0cU"
+            displayName: name.current.value,
+            photoURL: "https://media.licdn.com/dms/image/v2/D4D03AQGp1OlpMz1l8w/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1669181818407?e=1777507200&v=beta&t=4JY1M92AErqxeWcnE-gx0W7EubMpHGoYzlqn-ueN0cU"
           })
             .then(() => {
               // Profile updated!
               const { uid, email, displayName, photoURL } = auth.currentUser;
-                      dispatch(
-                        addUser({
-                          uid: uid,
-                          email: email,
-                          displayName: displayName,
-                          photoURL: photoURL,
-                        }),
-                      );
+              dispatch(
+                addUser({
+                  uid: uid,
+                  email: email,
+                  displayName: displayName,
+                  photoURL: photoURL,
+                }),
+              );
               console.log("User profile updated successfully.");
             })
             .catch((error) => {
@@ -57,8 +58,8 @@ const Login = () => {
               console.error("Error updating user profile:", error);
               setErrorMessage(error.message);
             });
-          console.log("User created successfully:", user);
-          navigate("/browse");
+          // console.log("User created successfully:", user);
+          // navigate("/browse");
         })
         .catch((error) => {
           const errorCode = error.code;
@@ -73,11 +74,10 @@ const Login = () => {
         email.current.value,
         password.current.value,
       )
-        .then((userCredential) => {
-          // Signed in
-          const user = userCredential.user;
-          console.log("User signed in successfully:", user);
-          navigate("/browse");
+        .then(() => {
+          // Signed in 
+          // console.log("User signed in successfully");
+          // navigate("/browse");
         })
         .catch((error) => {
           const errorCode = error.code;
@@ -111,6 +111,7 @@ const Login = () => {
         </h1>
         {isSignInForm ? null : (
           <input
+            ref={name}
             type="text"
             placeholder="Enter your name"
             className="p-4 my-4 w-full bg-gray-800 "
@@ -147,3 +148,4 @@ const Login = () => {
 };
 
 export default Login;
+
