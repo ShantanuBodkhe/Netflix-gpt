@@ -6,7 +6,7 @@ import { auth } from "../Utils/Firebase";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { addUser, removeUser } from "../Utils/UserSlice"; 
-import { Logo } from "../Utils/Constants";
+import { NETFLIX_LOGO } from "../Utils/Constants";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -51,7 +51,7 @@ const Header = () => {
     <div className="w-screen absolute px-8 py-2 bg-gradient-to-b from-black z-10 flex justify-between items-center">
       <img
         className="w-44 "
-        src={Logo}
+        src={NETFLIX_LOGO}
         alt="logo"
       />
       {user && (
@@ -65,4 +65,3 @@ const Header = () => {
 };
 
 export default Header;
-
