@@ -6,17 +6,19 @@ import useMovieTrailer from '../Hooks/useMovieTrailer'
 
 const MainContainer = () => {
     const movies = useSelector(store => store.movies?.nowPlayingMovies)
-    useMovieTrailer(movies?.[1]?.id)
+    useMovieTrailer(movies?.[2]?.id)
+
     if (!movies?.length) return (
+
         <div className="w-screen aspect-video">
             <img className="w-screen aspect-video object-cover" 
-                 src="https://assets-in.bfi.org.uk/public/image/large/167785-234x132.jpg" 
-                 alt="Loading movie poster" />
+                 src="/src/Utils/Logo.png"
+                 alt="Loading..." />
         </div>
     );
 
-    const mainMovies = movies[1];
-    console.log(mainMovies);
+
+    const mainMovies = movies[2];
     const { original_title: title, overview ,id} = mainMovies ?? {};
     
   return (

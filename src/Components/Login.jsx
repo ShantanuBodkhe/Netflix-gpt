@@ -58,8 +58,7 @@ const Login = () => {
               console.error("Error updating user profile:", error);
               setErrorMessage(error.message);
             });
-          // console.log("User created successfully:", user);
-          // navigate("/browse");
+          
         })
         .catch((error) => {
           const errorCode = error.code;
@@ -75,9 +74,7 @@ const Login = () => {
         password.current.value,
       )
         .then(() => {
-          // Signed in 
-          // console.log("User signed in successfully");
-          // navigate("/browse");
+          
         })
         .catch((error) => {
           const errorCode = error.code;
@@ -86,7 +83,6 @@ const Login = () => {
           setErrorMessage(errorCode + " " + errorMessage);
         });
 
-      // console.log("Signing In...");
     }
   };
 
